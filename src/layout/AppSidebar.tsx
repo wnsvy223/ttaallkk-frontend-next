@@ -16,6 +16,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  ChatIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
@@ -27,6 +28,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
+  {
+    icon: <ChatIcon />,
+    name: "Conference",
+    path: "/conference"
+  },
   {
     icon: <GridIcon />,
     name: "Dashboard",
@@ -234,7 +240,13 @@ const AppSidebar: React.FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // const isActive = (path: string) => path === pathname;
-   const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  // const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  const isActive = useCallback((path: string) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(path);
+  }, [pathname]);
 
   useEffect(() => {
     // Check if the current path matches any submenu item
