@@ -1,23 +1,42 @@
 import { Moment } from 'moment';
 
+// RTCMultiConnection의 모듈 타입 정의 : ES5 모듈이기 때문에, ES6 import 구문을 사용하기 위해 타입을 정의한 뒤 default로 접근해서 사용
+declare module '@/lib/RTCMultiConnection/RTCMultiConnection.js' {
+  const RTCMultiConnection: RTCMultiConnection;
+  export default RTCMultiConnection;
+}
+
 declare global {
 
   // RTCContext Provider context 타입
   type RTCContextType = {
-      connection: RTCMultiConnection | null;
+      connection: RTCMultiConnection | null,
+      useRTC: () => void,
       isConversation: boolean,
-      participants: ParticipantEventData[]
+      participants: ParticipantEventData[],
+      handleDisconnectRTC: () => void
+      speak: SpeakData | undefined,
+      setSpeak: Dispatch<SetStateAction<SpeakData>>
+      isMute: boolean,
+      muteStates: Record<string, boolean>,
+      setIsMute: Dispatch<SetStateAction<boolean>>
+      messageList: MessageData[],
+      setMessageList: Dispatch<SetStateAction<MessageData[]>>,
+      unReadMessageCount: number,
+      setUnReadMessageCount: Dispatch<SetStateAction<number>>,
+      resetDividerPosition: () => void
   };
 
   // Speaking / Silence 이벤트
   interface SpeakData {
     type?: 'speaking' | 'silence';
     userid?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   // 대화방 참가자 데이터
   export interface ParticipantEventData {
+    style: unknown;
     extra: ExtraData;
     isAudioMuted: boolean;
     mediaElement: HTMLMediaElement;
@@ -32,6 +51,27 @@ declare global {
     userid: string;
   }
 
+  interface MuteEvent {
+      extra: {
+        displayName: string,
+        profileUrl: string,
+        uid: string
+      };
+      isAudioMuted: boolean;
+      mediaElement: {
+        id: string
+      };
+      muteType: string;
+      session: {
+        audio?: boolean;
+        video?: boolean;
+      };
+      stream: MediaStream;
+      streamid: string;
+      type: string;
+      userid: string
+  }
+
   // 메시지 데이터
   interface MessageData {
     type: 'textMessage' | 'systemMessage' | string;
@@ -41,17 +81,17 @@ declare global {
     profileUrl?: string;
     timeStamp?: Moment;
     isDividerMessage?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   // onmessage 이벤트
   interface ConnectionEventData {
     data: {
       type: 'speaking' | 'silence' | 'textMessage' | string;
-      [key: string]: any;
+      [key: string]: unknown;
     };
     userid?: string;
-    extra?: any;
+    extra?: unknown;
   }
 
   // onleave 이벤트
@@ -60,7 +100,7 @@ declare global {
     extra?: {
       displayName?: string;
       profileUrl?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     };
   }
 
@@ -77,6 +117,8 @@ declare global {
     attachStreams: MediaStream[];
     streams: { [streamid: string]: MediaStream };
     filesContainer: HTMLElement | null;
+    isInitiator: boolean
+    publicRoomIdentifier: string
 
     // --- 파일 전송 ---
     enableFileSharing: boolean;
@@ -113,7 +155,7 @@ declare global {
     };
 
     // --- SDP ---
-    processSdp: (sdp: any) => any;
+    processSdp: (sdp: unknown) => unknown;
     sdpConstraints: {
       mandatory: {
         OfferToReceiveAudio: boolean;
@@ -121,7 +163,7 @@ declare global {
         VoiceActivityDetection?: boolean;
         IceRestart?: boolean;
       };
-      optional: any[];
+      optional: unknown[];
     };
 
     // --- ICE ---
@@ -131,7 +173,7 @@ declare global {
     extra: {
       displayName?: string;
       profileUrl?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     };
 
     // --- 참가자 목록 ---
@@ -173,29 +215,28 @@ declare global {
       callback?: (isJoined: boolean, roomid: string, error?: string) => void
     ): void;
 
-
+    getAllParticipants(): string[];
+    disconnectWith(participantId: string): void;
+    getSocket(callback: (socket: Socket) => void): void; 
     closeSocket(force?: boolean): void;
-    checkPresence(roomid: string, callback: (isRoomExist: boolean, roomid: string) => void): void;
-    send(data: any, remoteUserId?: string): void;
+    checkPresence(roomid: string, callback: (isRoomExist: boolean, roomid: string, extra: unknown) => void): void;
+    send(data: unknown, remoteUserId?: string): void;
     close(): void;
     leave(): void;
     renegotiate(remoteUserId: string): void;
+    updateExtraData(): void;
 
     // --- 이벤트 핸들러 ---
     onmessage: (event: ConnectionEventData) => void;
-    onopen: (event: { userid: string; extra: any }) => void;
-    onclose: (event: { userid: string; extra: any }) => void;
+    onopen: (event: { userid: string; extra: unknown }) => void;
+    onclose: (event: { userid: string; extra: unknown }) => void;
     onleave: (event: ConnectionLeaveEvent) => void;
     onstream: (event: ParticipantEventData) => void;
     onstreamended: (event:ParticipantEventData) => void;
-    onmute: (event: {
-      userid: string;
-      kind: 'audio' | 'video';
-      isAudioMuted: boolean;
-      isVideoMuted: boolean;
-    }) => void;
-    onunmute: (event: { userid: string; kind: 'audio' | 'video' }) => void;
-    onCustomMessage: (message: any, userid: string) => void;
+    onmute: (event: MuteEvent) => void;
+    onunmute: (event: MuteEvent) => void;
+    onCustomMessage: (message: unknown, userid: string) => void;
+    onerror: () => void;
 
     // --- 내부 상태 ---
     userid: string;

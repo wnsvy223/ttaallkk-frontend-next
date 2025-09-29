@@ -3,18 +3,20 @@ import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
-import { useRightSidebar } from "@/context/RightSidebarContext";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Headset } from "lucide-react";
-import { RTCMultiConnectionContext } from '@/context/RTCMultiConnectionContext';
+import { useRTC } from '@/context/RTCMultiConnectionContext';
 
-const AppHeader: React.FC = () => {
-  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+interface AppHeaderProps {
+  onToggleRightSidebar: () => void // 헤더컴포넌트의 헤드셋 버튼 클릭을 통해 오른쪽 사이드바 상태조절하는 함수
+}
+
+const AppHeader: React.FC<AppHeaderProps> = (props) => {
+  const [ isApplicationMenuOpen, setApplicationMenuOpen ] = useState(false);
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const { toggleRightSidebar } = useRightSidebar();
-  const { isConversation } = useContext(RTCMultiConnectionContext);
+  const { isConversation } = useRTC();
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -91,14 +93,14 @@ const AppHeader: React.FC = () => {
               width={154}
               height={32}
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src="/images/logo/logo.svg"
               alt="Logo"
             />
             <Image
               width={154}
               height={32}
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src="/images/logo/logo-dark.svg"
               alt="Logo"
             />
           </Link>
@@ -167,7 +169,7 @@ const AppHeader: React.FC = () => {
             {/* 오른쪽 사이드바 토글 버튼 */}
             {isConversation && 
               <button
-                onClick={toggleRightSidebar}
+                onClick={props.onToggleRightSidebar}
                 className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
                 aria-label="Toggle Right Sidebar"
               >
