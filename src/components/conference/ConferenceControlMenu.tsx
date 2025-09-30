@@ -4,14 +4,17 @@ import { useState,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, IconButton, Badge} from '@mui/material';
 
+import { useChatStore } from "@/store/ChatStore";
 import { useRTC  } from "@/context/RTCMultiConnectionContext";
+import { useMessage } from '@/context/MessageProvidor';
 
 import { Icon } from '@iconify/react';
 import micOutline from '@iconify/icons-eva/mic-outline';
-import micOffOutline from '@iconify/icons-eva/mic-off-outline';
+import micOffFill from '@iconify/icons-eva/mic-off-fill';
 import personAddOutline from '@iconify/icons-eva/person-add-outline';
 import MessageCircleOutline from '@iconify/icons-eva/message-circle-outline';
 import MessageCircleFill from '@iconify/icons-eva/message-circle-fill';
+import { useStream } from '@/context/StreamProvidor';
 
 
 
@@ -38,10 +41,11 @@ interface CustomMediaStream extends MediaStream {
 }
 
 export default function ConferenceControlMenu() {
-    const { connection, isMute, setIsMute, handleDisconnectRTC } = useRTC();
-    const [isChatActive, setIsChatActive] = useState<boolean>(false);
-    const [unReadMessageCount, setUnReadMessageCount] = useState<number>(0);
-
+    const [ isMute, setIsMute ] = useState(false);
+    const { handleDisconnectRTC } = useStream();
+    const { connection } = useRTC();
+    const { isChatActive, toggleChat} = useChatStore();
+    const { unReadMessageCount, setUnReadMessageCount } = useMessage();
     const handleQuitConference = () => {
       handleDisconnectRTC();
     };
@@ -51,7 +55,10 @@ export default function ConferenceControlMenu() {
     };
 
     const handleChatActive = () => {
-      setIsChatActive((isChatActive: boolean) => !isChatActive);
+      toggleChat();
+      if(!isChatActive && unReadMessageCount > 0){
+        setUnReadMessageCount(0);
+      }
     };
 
     const handleInviteUser = () => {
@@ -73,8 +80,7 @@ export default function ConferenceControlMenu() {
             connection.updateExtraData();
           });
         }
-    }
-      
+      }
     }, [connection, isMute]);
 
     return (
@@ -88,7 +94,7 @@ export default function ConferenceControlMenu() {
           >
             <Box
               component={Icon}
-              icon={isMute ? micOffOutline : micOutline}
+              icon={isMute ? micOffFill : micOutline}
               sx={{ width: 23, heigh: 23 }}
             />
           </IconButton>
@@ -99,7 +105,6 @@ export default function ConferenceControlMenu() {
             aria-label="mute"
             color="primary"
             onClick={handleChatActive}
-            
           >
             <MessageBadge badgeContent={unReadMessageCount}>
               <Box

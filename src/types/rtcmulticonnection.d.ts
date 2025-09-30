@@ -12,19 +12,6 @@ declare global {
   type RTCContextType = {
       connection: RTCMultiConnection | null,
       useRTC: () => void,
-      isConversation: boolean,
-      participants: ParticipantEventData[],
-      handleDisconnectRTC: () => void
-      speak: SpeakData | undefined,
-      setSpeak: Dispatch<SetStateAction<SpeakData>>
-      isMute: boolean,
-      muteStates: Record<string, boolean>,
-      setIsMute: Dispatch<SetStateAction<boolean>>
-      messageList: MessageData[],
-      setMessageList: Dispatch<SetStateAction<MessageData[]>>,
-      unReadMessageCount: number,
-      setUnReadMessageCount: Dispatch<SetStateAction<number>>,
-      resetDividerPosition: () => void
   };
 
   // Speaking / Silence 이벤트
@@ -82,6 +69,8 @@ declare global {
     timeStamp?: Moment;
     isDividerMessage?: boolean;
     [key: string]: unknown;
+    file?: any;
+    fileUuids?: []
   }
 
   // onmessage 이벤트

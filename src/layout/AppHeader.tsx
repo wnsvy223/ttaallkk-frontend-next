@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { Headset } from "lucide-react";
-import { useRTC } from '@/context/RTCMultiConnectionContext';
+import { useStream } from "@/context/StreamProvidor";
 
 interface AppHeaderProps {
   onToggleRightSidebar: () => void // 헤더컴포넌트의 헤드셋 버튼 클릭을 통해 오른쪽 사이드바 상태조절하는 함수
@@ -16,7 +16,7 @@ interface AppHeaderProps {
 const AppHeader: React.FC<AppHeaderProps> = (props) => {
   const [ isApplicationMenuOpen, setApplicationMenuOpen ] = useState(false);
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const { isConversation } = useRTC();
+  const { isConversation } = useStream();
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {

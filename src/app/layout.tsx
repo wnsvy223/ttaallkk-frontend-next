@@ -1,11 +1,13 @@
 import { Outfit } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
-import { RTCMultiConnectionProvider } from "@/context/RTCMultiConnectionContext";
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { MuiThemeProvider } from '@/context/MuiThemeProvidor';
+import { RTCMultiConnectionProvider } from "@/context/RTCMultiConnectionContext";
+import { MessageProvider } from '@/context/MessageProvidor';
+import { StreamProvider } from '@/context/StreamProvidor';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -47,7 +49,11 @@ export default function RootLayout({
             <MuiThemeProvider>
               <ThemeProvider>
                 <RTCMultiConnectionProvider>
-                  <SidebarProvider>{children}</SidebarProvider>
+                  <MessageProvider>
+                    <StreamProvider>
+                      <SidebarProvider>{children}</SidebarProvider>
+                    </StreamProvider>
+                  </MessageProvider>
                 </RTCMultiConnectionProvider>
               </ThemeProvider>
             </MuiThemeProvider>

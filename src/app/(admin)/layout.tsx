@@ -6,7 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import AppSidebarRight from "@/layout/AppSidebarRight";
 import Backdrop from "@/layout/Backdrop";
 import { useSidebar } from "@/context/SidebarContext";
-import { useRTC } from "@/context/RTCMultiConnectionContext";
+import { useStream } from "@/context/StreamProvidor";
 
 export default function AdminLayout({
   children,
@@ -20,7 +20,7 @@ export default function AdminLayout({
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const { isConversation } = useRTC();
+  const { isConversation } = useStream();
   const [ openRightSideBar, setOpenRightSideBar ] = useState(false); // 우측 사이드바 open 상태
 
   // 오른쪽 사이드바 토글

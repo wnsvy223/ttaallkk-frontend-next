@@ -1,11 +1,14 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
-import { Drawer, Stack, Box } from '@mui/material';
+import { Drawer, Stack, Box, Grow, Typography } from '@mui/material';
 import ConferenceControlMenu from '@/components/conference/ConferenceControlMenu';
 import SimpleBarReact from 'simplebar-react'; // simplebar-react
 import ConferenceParticipantsItem from '@/components/conference/ConferenceParticipantsItem';
-import { useRTC } from '@/context/RTCMultiConnectionContext';
+import ConferenceChatBox from '@/components/conference/ConferenceChatBox';
+import { useChatStore } from "@/store/ChatStore";
+import ConferenceChatInput from '@/components/conference/ConferenceChatInput';
+import { useStream } from '@/context/StreamProvidor';
 
 
 const SimplebarStyle = styled(SimpleBarReact)(() => ({
@@ -22,7 +25,8 @@ interface SidebarProps {
 }
 
 const AppSidebarRight: React.FC<SidebarProps> = (props) => {
-    const { muteStates ,participants } = useRTC();
+    const { muteStates, participants } = useStream();
+    const { isChatActive } = useChatStore();
 
     return (
        <Drawer
@@ -35,19 +39,37 @@ const AppSidebarRight: React.FC<SidebarProps> = (props) => {
           }
         }}
       >
-        <Stack sx={{ p: 2, width: 300, mt: 10 }} justifyContent="space-around" spacing={3}>
+        <Stack sx={{ p: 2, width: 350, height: '90%', mt: 10 }} justifyContent="space-around" spacing={3}>
           <ConferenceControlMenu/>
-          <SimplebarStyle>
-            {participants.map((event) => (
-              <Box 
-                  key={event.userid} 
-                  sx={{
-                    filter: muteStates[event.userid] ? 'brightness(0.5)' : 'brightness(1)'
-                  }}>
-                <ConferenceParticipantsItem event={event}/>
+          <Box>
+            <Grow in={isChatActive}>
+              <Box sx={{ display: isChatActive ? 'block' : 'none', pb: 2 }}>
+                <Box sx={{ pb: 1, pl: 1 }}>
+                  <Typography variant="h6">채팅</Typography>
+                </Box>
+                <ConferenceChatBox/>
+                <ConferenceChatInput/>
               </Box>
-            ))}
-            </SimplebarStyle>
+            </Grow>
+            <Grow in={!isChatActive}>
+              <Box sx={{ display: isChatActive ? 'none' : 'block', pb: 2 }}>
+                <Box sx={{ pb: 1, pl: 1 }}>
+                  <Typography variant="h6">대화방 참가자 ({participants?.length})</Typography>
+                </Box>
+                <SimplebarStyle>
+                {participants.map((event) => (
+                  <Box 
+                      key={event.userid} 
+                      sx={{
+                        filter: muteStates[event.userid] ? 'brightness(0.5)' : 'brightness(1)'
+                      }}>
+                    <ConferenceParticipantsItem event={event}/>
+                  </Box>
+                ))}
+                </SimplebarStyle>
+              </Box>
+            </Grow>
+          </Box>
         </Stack>
       </Drawer>
   );

@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles';
 import MuiInput from '@mui/material/Input';
 import { Grid, Box, TextField, Slider } from '@mui/material';
 import { useRTC } from "@/context/RTCMultiConnectionContext";
+import { useStream } from "@/context/StreamProvidor";
 
 const PrettoSlider = styled(Slider)({
   color: '#52af77',
@@ -56,7 +57,7 @@ export const PrivateConferenceForm = () => {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState(''); 
   const [sliderValue, setSliderValue] = useState<number>(0);
-  const { handleDisconnectRTC } = useRTC();
+  const { handleDisconnectRTC } = useStream();
 
   const handleCreateRoom = () => {
     if(connection){

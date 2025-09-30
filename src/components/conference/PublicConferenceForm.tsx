@@ -8,6 +8,7 @@ import MuiInput from '@mui/material/Input';
 import { Grid, Box, TextField, Slider } from '@mui/material';
 import { useRTC } from "@/context/RTCMultiConnectionContext";
 import { publicRoomIdentifier } from "@/utils/const";
+import { useStream } from "@/context/StreamProvidor";
 
 
 const PrettoSlider = styled(Slider)({
@@ -54,7 +55,7 @@ export const PublicConferenceForm = () => {
   const [roomName, setRoomName] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [sliderValue, setSliderValue] = useState(0);
-  const { handleDisconnectRTC } = useRTC();
+  const { handleDisconnectRTC } = useStream();
 
   const handleCreateRoom = () => {
     if(connection){

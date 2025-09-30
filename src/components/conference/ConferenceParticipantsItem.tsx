@@ -13,7 +13,6 @@ import hark from 'hark';
 
 // component
 import LetterAvatar from '../common/LetterAvatar';
-import { useRTC } from '@/context/RTCMultiConnectionContext';
 
 
 interface ConferenceEvent {
@@ -76,7 +75,6 @@ export default function ConferenceParticipantsItem({ event }: ConferenceParticip
   const [isMount, setIsMount] = useState<boolean>(false); // 컴포넌트 언마운트시 상태 변경 방지를 위한 상태값 : 스피치 이벤트를 통한 상태변경은 컴포넌트 마운트된 경우에만 수행
   const [localSpeak, setLocalSpeak] = useState<boolean>(false); // 로컬 유저의 대화 상태값
   const [remoteSpeak, setRemoteSpeak] = useState<boolean>(false); // 리모트 유저의 대화 상태값
-  const { isMute } = useRTC();
 
   const handleVolumeChange = (e: Event, value: number | number[]) => {
     if (videoRef.current && typeof value === 'number') {
@@ -125,33 +123,33 @@ export default function ConferenceParticipantsItem({ event }: ConferenceParticip
   useEffect(() => {
     if (event?.stream && event?.type === 'local' && speechRef.current) {
       speechRef.current.on('speaking', () => {
-        if (!isMute && isMount) setLocalSpeak(true);
+        if (!event.isAudioMuted && isMount) setLocalSpeak(true);
       });
 
       speechRef.current.on('stopped_speaking', () => {
-        if (!isMute && isMount) setLocalSpeak(false);
+        if (!event.isAudioMuted && isMount) setLocalSpeak(false);
       });
     }
     return () => {
       if (isMount) setIsMount(false);
     };
-  }, [event?.stream, event?.type, isMount, isMute]);
+  }, [event.isAudioMuted, event?.stream, event?.type, isMount]);
 
   // 리모트 유저의 대화상태 감지
   useEffect(() => {
     if (event?.stream && event?.type === 'remote' && speechRef.current) {
       speechRef.current.on('speaking', () => {
-        if (!isMute && isMount) setRemoteSpeak(true);
+        if (!event.isAudioMuted && isMount) setRemoteSpeak(true);
       });
 
       speechRef.current.on('stopped_speaking', () => {
-        if (!isMute && isMount) setRemoteSpeak(false);
+        if (!event.isAudioMuted && isMount) setRemoteSpeak(false);
       });
     }
     return () => {
       if (isMount) setIsMount(false);
     };
-  }, [event?.stream, event?.type, isMount, isMute]);
+  }, [event.isAudioMuted, event?.stream, event?.type, isMount]);
 
 
   return event?.type === 'local' ? (
