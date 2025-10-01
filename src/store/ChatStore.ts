@@ -1,7 +1,7 @@
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 import { findDividerItem } from '@/utils/utils';
 
-// 채팅창 컴포넌트 스토어
+// 채팅창 컴포넌트 스토어 타입
 interface ChatState {
   isChatActive: boolean;
   openChat: () => void;
@@ -9,18 +9,19 @@ interface ChatState {
   toggleChat: () => void;
 }
 
-export const useChatStore = create<ChatState>((set) => ({
-  isChatActive: false, // 초기 상태는 닫혀 있음
-  openChat: () => set({ isChatActive: true }),
-  closeChat: () => set({ isChatActive: false }),
-  toggleChat: () => set((state) => ({ isChatActive: !state.isChatActive })),
-}));
+// 채팅창 스토어 생성 함수
+export const createChatStore = () => {
+  return createStore<ChatState>((set) => ({
+    isChatActive: false,
+    openChat: () => set({ isChatActive: true }),
+    closeChat: () => set({ isChatActive: false }),
+    toggleChat: () => set((state) => ({ isChatActive: !state.isChatActive })),
+  }));
+};
 
-
-// 채팅창 메시지 데이터 스토어
+// 메시지 스토어 타입
 interface MessageStore {
   messageList: MessageData[];
-  setMessageList: (messages: MessageData[] | ((prev: MessageData[]) => MessageData[])) => void;
   addMessage: (message: MessageData) => void;
   removeMessage: (index: number) => void;
   clearMessages: () => void;
@@ -28,35 +29,39 @@ interface MessageStore {
   resetDividerMessage: () => void;
 }
 
-export const useMessageStore = create<MessageStore>((set) => ({
-  messageList: [{
-    type: 'systemMessage',
-    isDividerMessage: true
-  }],
-  
-   setMessageList: (messages) => set((state) => ({ 
-    messageList: typeof messages === 'function' ? messages(state.messageList) : messages 
-  })),
-  
-  addMessage: (message) => set((state) => ({ 
-    messageList: [...state.messageList, message] 
-  })),
-  
-  removeMessage: (index) => set((state) => ({ 
-    messageList: state.messageList.filter((_, i) => i !== index) 
-  })),
-  
-  clearMessages: () => set({ messageList: [] }),
-  
-  updateMessage: (index, message) => set((state) => ({
-    messageList: state.messageList.map((msg, i) => i === index ? message : msg)
-  })),
+// 메시지 스토어 생성 함수
+export const createMessageStore = () => {
+  return createStore<MessageStore>((set) => ({
+    messageList: [{
+      type: 'systemMessage',
+      isDividerMessage: true
+    }],
+    
+    addMessage: (message) => set((state) => ({
+      messageList: [...state.messageList, message]
+    })),
+    
+    removeMessage: (index) => set((state) => ({ 
+      messageList: state.messageList.filter((_, i) => i !== index) 
+    })),
+    
+    clearMessages: () => set({ 
+      messageList: [{
+        type: 'systemMessage',
+        isDividerMessage: true
+      }] 
+    }),
+    
+    updateMessage: (index, message) => set((state) => ({
+      messageList: state.messageList.map((msg, i) => i === index ? message : msg)
+    })),
 
-  resetDividerMessage: () => set((state) => {
-    const { item, filteredList } = findDividerItem(state.messageList);
-    if (!item) {
+    resetDividerMessage: () => set((state) => {
+      const { item, filteredList } = findDividerItem(state.messageList);
+      if (!item) {
         return state;
-    }
-    return { messageList: [item, ...filteredList] };
-  })
-}));
+      }
+      return { messageList: [item, ...filteredList] };
+    })
+  }));
+};

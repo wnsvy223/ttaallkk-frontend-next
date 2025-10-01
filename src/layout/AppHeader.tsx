@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { Headset } from "lucide-react";
-import { useStream } from "@/context/StreamProvidor";
+import { useStream } from "@/context/StreamContext";
 
 interface AppHeaderProps {
   onToggleRightSidebar: () => void // 헤더컴포넌트의 헤드셋 버튼 클릭을 통해 오른쪽 사이드바 상태조절하는 함수

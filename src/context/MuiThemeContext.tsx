@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../src/app/theme';
+import theme from '../app/theme';
 
 export const MuiThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 import MuiInput from '@mui/material/Input';
 import { Grid, Box, TextField, Slider } from '@mui/material';
 import { useRTC } from "@/context/RTCMultiConnectionContext";
-import { useStream } from "@/context/StreamProvidor";
+import { useStream } from "@/context/StreamContext";
 
 const PrettoSlider = styled(Slider)({
   color: '#52af77',

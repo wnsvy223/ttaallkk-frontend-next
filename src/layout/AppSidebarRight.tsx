@@ -6,9 +6,9 @@ import ConferenceControlMenu from '@/components/conference/ConferenceControlMenu
 import SimpleBarReact from 'simplebar-react'; // simplebar-react
 import ConferenceParticipantsItem from '@/components/conference/ConferenceParticipantsItem';
 import ConferenceChatBox from '@/components/conference/ConferenceChatBox';
-import { useChatStore } from "@/store/ChatStore";
+import { useChatStore } from "@/context/ChatStoreContext";
 import ConferenceChatInput from '@/components/conference/ConferenceChatInput';
-import { useStream } from '@/context/StreamProvidor';
+import { useStream } from '@/context/StreamContext';
 
 
 const SimplebarStyle = styled(SimpleBarReact)(() => ({
@@ -26,7 +26,7 @@ interface SidebarProps {
 
 const AppSidebarRight: React.FC<SidebarProps> = (props) => {
     const { muteStates, participants } = useStream();
-    const { isChatActive } = useChatStore();
+    const isChatActive = useChatStore((state) => state.isChatActive);
 
     return (
        <Drawer

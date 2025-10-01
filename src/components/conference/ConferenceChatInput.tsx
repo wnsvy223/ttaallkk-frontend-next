@@ -14,8 +14,7 @@ import SharFileIcon from '@iconify/icons-fluent/image-multiple-16-regular';
 import moment from 'moment';
 import 'moment/locale/ko';
 import { useRTC } from '@/context/RTCMultiConnectionContext';
-import { useMessage } from '@/context/MessageProvidor';
-import { useMessageStore } from '@/store/ChatStore';
+import { useMessageStore } from '@/context/ChatStoreContext';
 
 
 const ChatInputBox = styled(Box)(() => ({
@@ -35,8 +34,8 @@ const ChatInputPaper = styled(Paper)(() => ({
 export default function ConferenceChatInput() {
   const [chatMessage, setChatMessage] = useState('');
   const { connection } = useRTC();
-  const { setMessageList, } = useMessage();
-  const { resetDividerMessage } = useMessageStore();
+  const addMessage = useMessageStore((state) => state.addMessage);
+  const resetDividerMessage = useMessageStore((state) => state.resetDividerMessage);
 
   const handleEnterPress = (e: { key: string; }) => {
     if (e.key === 'Enter') {
@@ -60,7 +59,7 @@ export default function ConferenceChatInput() {
       };
       connection.send(newMessage);
       resetDividerMessage();
-      setMessageList((message: any) => [...message, newMessage]);
+      addMessage(newMessage);
       setChatMessage('');
     }
   };

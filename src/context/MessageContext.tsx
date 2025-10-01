@@ -3,7 +3,7 @@
 import { useState, createContext, SetStateAction, Dispatch, useContext } from 'react';
 import moment from 'moment'; // Moment
 import { useRTC } from './RTCMultiConnectionContext';
-import { useChatStore, useMessageStore } from '@/store/ChatStore';
+import { useChatStore, useMessageStore } from '@/context/ChatStoreContext';
 
 
 type MessageContextType = {
@@ -11,8 +11,6 @@ type MessageContextType = {
     connection: RTCMultiConnection | null,
     speak: SpeakData | undefined,
     setSpeak: Dispatch<SetStateAction<SpeakData | undefined>>
-    messageList: MessageData[],
-    setMessageList: Dispatch<SetStateAction<MessageData[]>>,
     unReadMessageCount: number,
     setUnReadMessageCount: Dispatch<SetStateAction<number>>,
     setSystemMessage: (event: ConnectionLeaveEvent) => void
@@ -31,8 +29,11 @@ export function MessageProvider({ children }: { children: React.ReactNode }) {
     const { connection } = useRTC();
     const [ speak, setSpeak ] = useState<SpeakData | undefined>();
     const [ unReadMessageCount, setUnReadMessageCount ] = useState<number>(0);
-    const { messageList, setMessageList, resetDividerMessage} = useMessageStore();
-    const { isChatActive } = useChatStore();
+    //const { addMessage, resetDividerMessage} = useMessageStore();
+    //const { isChatActive } = useChatStore();
+    const addMessage = useMessageStore((state) => state.addMessage);
+    const resetDividerMessage = useMessageStore((state) => state.resetDividerMessage);
+    const isChatActive = useChatStore((state) => state.isChatActive);
 
     const setSystemMessage = (event: ConnectionLeaveEvent): void => {
         const systemMessage: MessageData = {
@@ -43,7 +44,7 @@ export function MessageProvider({ children }: { children: React.ReactNode }) {
             timeStamp: moment()
             };
         resetDividerMessage();
-        setMessageList((message: MessageData[]) => [...message, systemMessage]);
+        addMessage(systemMessage);
     };
 
     if(connection){
@@ -58,7 +59,7 @@ export function MessageProvider({ children }: { children: React.ReactNode }) {
                 break;
             case 'textMessage':
                 resetDividerMessage();
-                setMessageList((message: MessageData[]) => [...message, event.data as MessageData]);
+                addMessage(event.data);
                 if(!isChatActive){
                     setUnReadMessageCount((count) => count + 1);
                 }
@@ -81,8 +82,6 @@ export function MessageProvider({ children }: { children: React.ReactNode }) {
                 connection,
                 speak,
                 setSpeak,
-                messageList,
-                setMessageList,
                 unReadMessageCount,
                 setUnReadMessageCount,
                 setSystemMessage

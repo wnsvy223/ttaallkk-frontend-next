@@ -3,7 +3,7 @@
 import { useState, createContext, SetStateAction, Dispatch, useContext } from 'react';
 import moment from 'moment'; // Moment
 import { useRTC } from './RTCMultiConnectionContext';
-import { useMessageStore } from '@/store/ChatStore';
+import { useMessageStore } from '@/context/ChatStoreContext';
 import initHark from '@/lib/Hark/Hark';
 
 
@@ -30,7 +30,8 @@ export const useStream = () => {
 
 export function StreamProvider({ children }: { children: React.ReactNode }) {
     const { connection } = useRTC();
-    const { setMessageList, resetDividerMessage} = useMessageStore();
+    const addMessage = useMessageStore((state) => state.addMessage);
+    const resetDividerMessage = useMessageStore((state) => state.resetDividerMessage);
     const [ participants, setParticipants ] = useState<ParticipantEventData[]>([]);
     const [ muteStates, setMuteStates ] = useState<Record<string, boolean>>({});
     const [ isConversation, setIsConversation ] = useState<boolean>(false);
@@ -65,7 +66,7 @@ export function StreamProvider({ children }: { children: React.ReactNode }) {
                 timeStamp: moment()
                 };
             resetDividerMessage();
-            setMessageList((message: MessageData[]) => [...message, systemMessage]);
+            addMessage(systemMessage);
         };
 
         // 스트림 시작
@@ -89,7 +90,7 @@ export function StreamProvider({ children }: { children: React.ReactNode }) {
                     profileUrl: connection?.extra?.profileUrl,
                     timeStamp: moment()
                 };
-                setMessageList((message) => [...message, systemMessage]);
+                addMessage(systemMessage);
             }
         };
 

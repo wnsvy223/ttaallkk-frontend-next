@@ -4,9 +4,9 @@ import { useState,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, IconButton, Badge} from '@mui/material';
 
-import { useChatStore } from "@/store/ChatStore";
+import { useChatStore } from "@/context/ChatStoreContext";
 import { useRTC  } from "@/context/RTCMultiConnectionContext";
-import { useMessage } from '@/context/MessageProvidor';
+import { useMessage } from '@/context/MessageContext';
 
 import { Icon } from '@iconify/react';
 import micOutline from '@iconify/icons-eva/mic-outline';
@@ -14,7 +14,7 @@ import micOffFill from '@iconify/icons-eva/mic-off-fill';
 import personAddOutline from '@iconify/icons-eva/person-add-outline';
 import MessageCircleOutline from '@iconify/icons-eva/message-circle-outline';
 import MessageCircleFill from '@iconify/icons-eva/message-circle-fill';
-import { useStream } from '@/context/StreamProvidor';
+import { useStream } from '@/context/StreamContext';
 
 
 
@@ -44,7 +44,8 @@ export default function ConferenceControlMenu() {
     const [ isMute, setIsMute ] = useState(false);
     const { handleDisconnectRTC } = useStream();
     const { connection } = useRTC();
-    const { isChatActive, toggleChat} = useChatStore();
+    const isChatActive = useChatStore((state) => state.isChatActive);
+    const toggleChat = useChatStore((state) => state.toggleChat);
     const { unReadMessageCount, setUnReadMessageCount } = useMessage();
     const handleQuitConference = () => {
       handleDisconnectRTC();

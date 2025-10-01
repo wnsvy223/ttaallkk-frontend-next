@@ -4,10 +4,11 @@ import Script from 'next/script';
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { MuiThemeProvider } from '@/context/MuiThemeProvidor';
+import { MuiThemeProvider } from '@/context/MuiThemeContext';
 import { RTCMultiConnectionProvider } from "@/context/RTCMultiConnectionContext";
-import { MessageProvider } from '@/context/MessageProvidor';
-import { StreamProvider } from '@/context/StreamProvidor';
+import { MessageProvider } from '@/context/MessageContext';
+import { StreamProvider } from '@/context/StreamContext';
+import { ChatStoreProvider } from '@/context/ChatStoreContext';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -48,13 +49,17 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <MuiThemeProvider>
               <ThemeProvider>
+                <ChatStoreProvider>
                 <RTCMultiConnectionProvider>
+                  
                   <MessageProvider>
                     <StreamProvider>
                       <SidebarProvider>{children}</SidebarProvider>
                     </StreamProvider>
                   </MessageProvider>
+                  
                 </RTCMultiConnectionProvider>
+                </ChatStoreProvider>
               </ThemeProvider>
             </MuiThemeProvider>
           </AppRouterCacheProvider>

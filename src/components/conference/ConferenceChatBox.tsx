@@ -33,7 +33,8 @@ import { Virtuoso } from "react-virtuoso";
 // component
 import LetterAvatar from "../common/LetterAvatar";
 import { useRTC } from "@/context/RTCMultiConnectionContext";
-import { useMessage } from "@/context/MessageProvidor";
+import { useMessage } from "@/context/MessageContext";
+import { useMessageStore } from "@/context/ChatStoreContext";
 
 interface MessageItemProps {
   data: MessageData;
@@ -250,7 +251,8 @@ const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
 
 export default function ConferenceChatBox() {
   const { connection } = useRTC();
-  const { messageList } = useMessage();
+  //const { messageList } = useMessageStore();
+  const messageList = useMessageStore((state) => state.messageList);
   const virtuosoRef = useRef<any>(null);
 
   useEffect(() => {

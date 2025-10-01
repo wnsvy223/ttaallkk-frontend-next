@@ -6,7 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import AppSidebarRight from "@/layout/AppSidebarRight";
 import Backdrop from "@/layout/Backdrop";
 import { useSidebar } from "@/context/SidebarContext";
-import { useStream } from "@/context/StreamProvidor";
+import { useStream } from "@/context/StreamContext";
 
 export default function AdminLayout({
   children,
