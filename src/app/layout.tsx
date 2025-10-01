@@ -50,15 +50,13 @@ export default function RootLayout({
             <MuiThemeProvider>
               <ThemeProvider>
                 <ChatStoreProvider>
-                <RTCMultiConnectionProvider>
-                  
-                  <MessageProvider>
-                    <StreamProvider>
-                      <SidebarProvider>{children}</SidebarProvider>
-                    </StreamProvider>
-                  </MessageProvider>
-                  
-                </RTCMultiConnectionProvider>
+                  <RTCMultiConnectionProvider>
+                    <MessageProvider>
+                      <StreamProvider>
+                        <SidebarProvider>{children}</SidebarProvider>
+                      </StreamProvider>
+                    </MessageProvider>
+                  </RTCMultiConnectionProvider>
                 </ChatStoreProvider>
               </ThemeProvider>
             </MuiThemeProvider>

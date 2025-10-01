@@ -4,7 +4,7 @@ import { useState,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, IconButton, Badge} from '@mui/material';
 
-import { useChatStore } from "@/context/ChatStoreContext";
+import { useChatStore, useMessageStore } from "@/context/ChatStoreContext";
 import { useRTC  } from "@/context/RTCMultiConnectionContext";
 import { useMessage } from '@/context/MessageContext';
 
@@ -47,6 +47,7 @@ export default function ConferenceControlMenu() {
     const isChatActive = useChatStore((state) => state.isChatActive);
     const toggleChat = useChatStore((state) => state.toggleChat);
     const { unReadMessageCount, setUnReadMessageCount } = useMessage();
+    const setDividerPosition = useMessageStore((state) => state.setDividerPosition);
     const handleQuitConference = () => {
       handleDisconnectRTC();
     };
@@ -57,14 +58,18 @@ export default function ConferenceControlMenu() {
 
     const handleChatActive = () => {
       toggleChat();
-      if(!isChatActive && unReadMessageCount > 0){
-        setUnReadMessageCount(0);
+      if(!isChatActive ){
+        setDividerPosition(unReadMessageCount);
       }
     };
 
     const handleInviteUser = () => {
 
     };
+
+    useEffect(() => {
+      if (isChatActive) setUnReadMessageCount(0);
+    }, [isChatActive, setUnReadMessageCount]);
 
     useEffect(() => {
       if(connection){

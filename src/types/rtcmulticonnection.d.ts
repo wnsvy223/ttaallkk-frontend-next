@@ -70,7 +70,8 @@ declare global {
     isDividerMessage?: boolean;
     [key: string]: unknown;
     file?: any;
-    fileUuids?: []
+    fileUuids?: [],
+    isDividerMessage?: boolean
   }
 
   // onmessage 이벤트

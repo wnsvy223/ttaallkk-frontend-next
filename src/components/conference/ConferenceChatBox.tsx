@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, memo } from "react";
+import { useEffect, useRef, memo } from "react";
 import {
   Stack,
   Box,
@@ -33,7 +33,6 @@ import { Virtuoso } from "react-virtuoso";
 // component
 import LetterAvatar from "../common/LetterAvatar";
 import { useRTC } from "@/context/RTCMultiConnectionContext";
-import { useMessage } from "@/context/MessageContext";
 import { useMessageStore } from "@/context/ChatStoreContext";
 
 interface MessageItemProps {
@@ -251,7 +250,6 @@ const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
 
 export default function ConferenceChatBox() {
   const { connection } = useRTC();
-  //const { messageList } = useMessageStore();
   const messageList = useMessageStore((state) => state.messageList);
   const virtuosoRef = useRef<any>(null);
 
@@ -277,17 +275,14 @@ export default function ConferenceChatBox() {
         increaseViewportBy={200}
         itemContent={(index, data) => {
           if (data?.type === "systemMessage") {
-            return data?.isDividerMessage === true ? (
-              <UnReadMessageDivider
-                sx={{
-                  height: index === 0 || index === messageList.length - 1 ? "5px" : "12px",
-                }}
-              >
-                여기까지 읽었습니다.
-              </UnReadMessageDivider>
-            ) : (
-              <SystemMessageItem data={data} />
-            );
+            if (data?.isDividerMessage === true) {
+              return (index === 0 || index === messageList.length - 1) 
+              ? 
+              <Box sx={{ height: '1px'}}/>
+              : 
+              <UnReadMessageDivider>여기까지 읽었습니다.</UnReadMessageDivider>
+            }
+            return <SystemMessageItem data={data} />;
           }
           return data?.userid === connection?.userid ? (
             <SendMessageItem data={data} />

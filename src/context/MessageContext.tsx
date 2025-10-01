@@ -29,8 +29,6 @@ export function MessageProvider({ children }: { children: React.ReactNode }) {
     const { connection } = useRTC();
     const [ speak, setSpeak ] = useState<SpeakData | undefined>();
     const [ unReadMessageCount, setUnReadMessageCount ] = useState<number>(0);
-    //const { addMessage, resetDividerMessage} = useMessageStore();
-    //const { isChatActive } = useChatStore();
     const addMessage = useMessageStore((state) => state.addMessage);
     const resetDividerMessage = useMessageStore((state) => state.resetDividerMessage);
     const isChatActive = useChatStore((state) => state.isChatActive);
