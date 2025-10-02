@@ -215,6 +215,7 @@ declare global {
     leave(): void;
     renegotiate(remoteUserId: string): void;
     updateExtraData(): void;
+    getExtraData(remoteUserId: string): any;
 
     // --- 이벤트 핸들러 ---
     onmessage: (event: ConnectionEventData) => void;
@@ -227,6 +228,9 @@ declare global {
     onunmute: (event: MuteEvent) => void;
     onCustomMessage: (message: unknown, userid: string) => void;
     onerror: () => void;
+    onFileStart: (any) => void;
+    onFileProgress: (any) => void;
+    onFileEnd: (any) => void;
 
     // --- 내부 상태 ---
     userid: string;

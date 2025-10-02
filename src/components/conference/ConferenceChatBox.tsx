@@ -86,118 +86,47 @@ const ProgressBar = styled(LinearProgress)(({ theme }) => ({
 // -------------------------------SystemMessage---------------------------------------
 // eslint-disable-next-line react/display-name
 const SystemMessageItem = memo(({ data }: MessageItemProps) => (
-  <Stack direction="row" alignItems="center" justifyContent="center" sx={{ pt: 5, pb: 5 }}>
-    <Stack
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      sx={{
-        p: 0.5,
-        backgroundColor: "#125e8a",
-        color: "#F2F2F2",
-        borderRadius: 2,
-        width: "80%",
-      }}
-    >
-      <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>{data?.text}</Typography>
-      <Typography noWrap sx={{ fontSize: 10, color: "#F2F2F2" }}>
-        {moment(data?.timeStamp).format("YYYY년 MMMM Do dddd A h:mm:ss")}
-      </Typography>
+  <Grow in timeout={300}>
+    <Stack direction="row" alignItems="center" justifyContent="center" sx={{ pt: 5, pb: 5 }}>
+      <Stack
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          p: 0.5,
+          backgroundColor: "#125e8a",
+          color: "#F2F2F2",
+          borderRadius: 2,
+          width: "80%",
+        }}
+      >
+        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>{data?.text}</Typography>
+        <Typography noWrap sx={{ fontSize: 10, color: "#F2F2F2" }}>
+          {moment(data?.timeStamp).format("YYYY년 MMMM Do dddd A h:mm:ss")}
+        </Typography>
+      </Stack>
     </Stack>
-  </Stack>
+  </Grow>
 ));
 
 // -------------------------------SendMessageItem---------------------------------------
 // eslint-disable-next-line react/display-name
 const SendMessageItem = memo(({ data }: MessageItemProps) => (
-  <Stack direction="row" justifyContent="right" spacing={1} sx={{ pt: 1, pb: 1 }}>
-    <Stack direction="row" alignItems="flex-end">
-      <Typography noWrap sx={{ fontSize: 10, color: "#a09d9dff" }}>
-        {moment(data?.timeStamp).fromNow()}
-      </Typography>
-    </Stack>
-    <Box
-      sx={{
-        backgroundColor: "#505050",
-        color: "#F2F2F2",
-        p: 1.5,
-        borderRadius: 2,
-        minWidth: 150,
-        maxWidth: "80%",
-        boxShadow: 1,
-      }}
-    >
-      <Typography
-        sx={{
-          fontSize: "12px",
-          wordWrap: "break-word",
-          textAlign: data?.file ? "center" : "initial",
-        }}
-      >
-        {data?.text}
-      </Typography>
-
-      {/* 다중 파일 프로그래스바 */}
-      {data?.fileUuids && data.fileUuids.length > 0 && (
-        <Stack>
-          {data.fileUuids.map((uuid: string, index: number) => (
-            <ProgressBar key={index} variant="determinate" value={0} data-file-uuid={uuid} />
-          ))}
-        </Stack>
-      )}
-
-      {/* 단일 파일 진행 */}
-      {data?.file && data?.file?.end !== true && (
-        <ProgressBar variant="determinate" value={0} data-file-uuid={data.file.uuid} />
-      )}
-
-      {/* 단일 파일 완료 */}
-      {data?.file && data?.file?.end === true && (
-        <Stack alignItems="center" justifyContent="center">
-          <FileMessageWrapper>
-            {data?.file?.type.indexOf("image") !== -1 && (
-              <CardMedia component="img" image={data?.file?.url} alt="image file" />
-            )}
-            <Link
-              href={data?.file?.url}
-              target="_blank"
-              rel="noreferrer"
-              download={data?.file?.name}
-              underline="hover"
-              sx={{ fontSize: 12, textAlign: "center" }}
-            >
-              <IconButton sx={{ fontSize: 20 }}>
-                <Box component={Icon} icon={DownLoad} sx={{ width: 23, heigh: 23, color: "gray" }} />
-              </IconButton>
-            </Link>
-          </FileMessageWrapper>
-        </Stack>
-      )}
-    </Box>
-  </Stack>
-));
-
-// -------------------------------ReceiveMessageItem---------------------------------------
-// eslint-disable-next-line react/display-name
-const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
-  <Stack direction="row" justifyContent="left" spacing={1} sx={{ pt: 1, pb: 1, maxWidth: "90%" }}>
-    <LetterAvatar
-      src={data?.profileUrl}
-      sx={{
-        width: 32,
-        height: 32,
-        name: data?.displayName || "",
-        fontSize: 12,
-      }}
-    />
-    <Stack sx={{ minWidth: 150, maxWidth: "80%" }}>
-      <DisplayNameTextView>{data?.displayName}</DisplayNameTextView>
+  <Grow in timeout={300}>
+    <Stack direction="row" justifyContent="right" spacing={1} sx={{ pt: 1, pb: 1 }}>
+      <Stack direction="row" alignItems="flex-end">
+        <Typography noWrap sx={{ fontSize: 10, color: "#a09d9dff" }}>
+          {moment(data?.timeStamp).fromNow()}
+        </Typography>
+      </Stack>
       <Box
         sx={{
-          backgroundColor: "#FCEC4F",
-          color: "black",
+          backgroundColor: "#505050",
+          color: "#F2F2F2",
           p: 1.5,
           borderRadius: 2,
+          minWidth: 150,
+          maxWidth: "80%",
           boxShadow: 1,
         }}
       >
@@ -210,9 +139,22 @@ const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
         >
           {data?.text}
         </Typography>
-        {data?.file && data?.file?.end !== true && (
-          <ProgressBar variant="determinate" value={0} data-file-uuid={data?.file?.uuid} />
+
+        {/* 다중 파일 프로그래스바 */}
+        {data?.fileUuids && data.fileUuids.length > 0 && (
+          <Stack>
+            {data.fileUuids.map((uuid: string, index: number) => (
+              <ProgressBar key={index} variant="determinate" value={0} data-file-uuid={uuid} />
+            ))}
+          </Stack>
         )}
+
+        {/* 단일 파일 진행 */}
+        {data?.file && data?.file?.end !== true && (
+          <ProgressBar variant="determinate" value={0} data-file-uuid={data.file.uuid} />
+        )}
+
+        {/* 단일 파일 완료 */}
         {data?.file && data?.file?.end === true && (
           <Stack alignItems="center" justifyContent="center">
             <FileMessageWrapper>
@@ -228,11 +170,7 @@ const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
                 sx={{ fontSize: 12, textAlign: "center" }}
               >
                 <IconButton sx={{ fontSize: 20 }}>
-                  <Box
-                    component={Icon}
-                    icon={DownLoad}
-                    sx={{ width: 23, heigh: 23, color: "gray" }}
-                  />
+                  <Box component={Icon} icon={DownLoad} sx={{ width: 23, heigh: 23, color: "gray" }} />
                 </IconButton>
               </Link>
             </FileMessageWrapper>
@@ -240,12 +178,80 @@ const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
         )}
       </Box>
     </Stack>
-    <Stack direction="row" alignItems="flex-end">
-      <Typography noWrap sx={{ fontSize: 10, color: "#a09d9dff" }}>
-        {moment(data?.timeStamp).fromNow()}
-      </Typography>
+  </Grow>
+));
+
+// -------------------------------ReceiveMessageItem---------------------------------------
+// eslint-disable-next-line react/display-name
+const ReceiveMessageItem = memo(({ data }: MessageItemProps) => (
+  <Grow in timeout={300}>
+    <Stack direction="row" justifyContent="left" spacing={1} sx={{ pt: 1, pb: 1, maxWidth: "90%" }}>
+      <LetterAvatar
+        src={data?.profileUrl}
+        sx={{
+          width: 32,
+          height: 32,
+          name: data?.displayName || "",
+          fontSize: 12,
+        }}
+      />
+      <Stack sx={{ minWidth: 150, maxWidth: "80%" }}>
+        <DisplayNameTextView>{data?.displayName}</DisplayNameTextView>
+        <Box
+          sx={{
+            backgroundColor: "#FCEC4F",
+            color: "black",
+            p: 1.5,
+            borderRadius: 2,
+            boxShadow: 1,
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "12px",
+              wordWrap: "break-word",
+              textAlign: data?.file ? "center" : "initial",
+            }}
+          >
+            {data?.text}
+          </Typography>
+          {data?.file && data?.file?.end !== true && (
+            <ProgressBar variant="determinate" value={0} data-file-uuid={data?.file?.uuid} />
+          )}
+          {data?.file && data?.file?.end === true && (
+            <Stack alignItems="center" justifyContent="center">
+              <FileMessageWrapper>
+                {data?.file?.type.indexOf("image") !== -1 && (
+                  <CardMedia component="img" image={data?.file?.url} alt="image file" />
+                )}
+                <Link
+                  href={data?.file?.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  download={data?.file?.name}
+                  underline="hover"
+                  sx={{ fontSize: 12, textAlign: "center" }}
+                >
+                  <IconButton sx={{ fontSize: 20 }}>
+                    <Box
+                      component={Icon}
+                      icon={DownLoad}
+                      sx={{ width: 23, heigh: 23, color: "gray" }}
+                    />
+                  </IconButton>
+                </Link>
+              </FileMessageWrapper>
+            </Stack>
+          )}
+        </Box>
+      </Stack>
+      <Stack direction="row" alignItems="flex-end">
+        <Typography noWrap sx={{ fontSize: 10, color: "#a09d9dff" }}>
+          {moment(data?.timeStamp).fromNow()}
+        </Typography>
+      </Stack>
     </Stack>
-  </Stack>
+  </Grow>
 ));
 
 export default function ConferenceChatBox() {
@@ -253,15 +259,14 @@ export default function ConferenceChatBox() {
   const messageList = useMessageStore((state) => state.messageList);
   const virtuosoRef = useRef<any>(null);
 
+  // 메시지 추가될 때 스크롤 맨 아래로 이동
   useEffect(() => {
-    if (virtuosoRef.current) {
-      setTimeout(() => {
-        virtuosoRef.current.scrollToIndex({
-          index: messageList.length - 1, // 마지막 인덱스는 length - 1
-          align: "end",
-          behavior: "smooth",
-        });
-      }, 100);
+    if (virtuosoRef.current && messageList.length > 0) {
+      virtuosoRef.current?.scrollToIndex({
+        index: messageList.length - 1,
+        align: "end",
+        behavior: "smooth",
+      });
     }
   }, [messageList]);
 

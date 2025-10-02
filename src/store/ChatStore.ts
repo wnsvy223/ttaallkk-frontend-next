@@ -24,6 +24,7 @@ export const createChatStore = () => {
 interface MessageStore {
   messageList: MessageData[];
   addMessage: (message: MessageData) => void;
+  addFileMessage: (fileMessage: MessageData) => void;
   removeMessage: (index: number) => void;
   clearMessages: () => void;
   updateMessage: (index: number, message: MessageData) => void;
@@ -42,6 +43,16 @@ export const createMessageStore = () => {
     addMessage: (message) => set((state) => ({
       messageList: [...state.messageList, message]
     })),
+    
+    addFileMessage: (fileMessage: MessageData) =>
+      set((state) => {
+        const filtered = state.messageList.filter(
+          (data) => data?.file?.uuid !== fileMessage?.file?.uuid
+        );
+        return {
+          messageList: [...filtered, fileMessage],
+        };
+      }),
     
     removeMessage: (index) => set((state) => ({ 
       messageList: state.messageList.filter((_, i) => i !== index) 

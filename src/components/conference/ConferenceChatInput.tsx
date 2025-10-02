@@ -15,6 +15,7 @@ import moment from 'moment';
 import 'moment/locale/ko';
 import { useRTC } from '@/context/RTCMultiConnectionContext';
 import { useMessageStore } from '@/context/ChatStoreContext';
+import { useMessage } from '@/context/MessageContext';
 
 
 const ChatInputBox = styled(Box)(() => ({
@@ -36,6 +37,7 @@ export default function ConferenceChatInput() {
   const { connection } = useRTC();
   const addMessage = useMessageStore((state) => state.addMessage);
   const resetDividerMessage = useMessageStore((state) => state.resetDividerMessage);
+  const { sendMultipleFile } = useMessage();
 
   const handleEnterPress = (e: { key: string; }) => {
     if (e.key === 'Enter') {
@@ -82,7 +84,7 @@ export default function ConferenceChatInput() {
       connection?.send(files[0]);
     } else {
       // 다수 파일 전송
-      // sendMultipleFile(Array.from(files));
+      sendMultipleFile(Array.from(files));
     }
     if (inputFile.current) {
       inputFile.current.value = ''; // input 값 리셋
