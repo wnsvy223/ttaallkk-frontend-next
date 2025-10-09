@@ -36,7 +36,13 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    subItems: [
+      { name: "Ecommerce", path: "/", pro: false },
+      { name: "자유게시판", path: "/community/free", pro: false },
+      { name: "대화게시판", path: "/community/talk", pro: false },
+      { name: "Q&A게시판", path: "/community/tip", pro: false },
+      { name: "홍보게시판", path: "/community/ads", pro: false }
+    ],
   },
   {
     icon: <CalenderIcon />,

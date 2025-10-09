@@ -47,8 +47,8 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
           <AppRouterCacheProvider>
-            <MuiThemeProvider>
-              <ThemeProvider>
+            <ThemeProvider>
+              <MuiThemeProvider>
                 <ChatStoreProvider>
                   <RTCMultiConnectionProvider>
                     <MessageProvider>
@@ -58,8 +58,8 @@ export default function RootLayout({
                     </MessageProvider>
                   </RTCMultiConnectionProvider>
                 </ChatStoreProvider>
-              </ThemeProvider>
-            </MuiThemeProvider>
+              </MuiThemeProvider>
+            </ThemeProvider>
           </AppRouterCacheProvider>
       </body>
     </html>
